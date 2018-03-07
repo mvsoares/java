@@ -1,47 +1,50 @@
 #!/bin/bash
 rg=rg-dev
-vnet=$vnet
+vnet=vnet
 subnet=default
 vmPrefix=vm
-nsgName=nsg-dev
+nsgName=nsg
 vmSize=Standard_d2_v2
 imageRef=UbuntuLTS
 address="10.21.0.0/20"
-subnet-address="10.21.0.0/24"
+subnetAddress="10.21.0.0/24"
 username="masoar"
 password="AzureRocks2018!"
 
 az group create \
-  --name $rg-dev \
+  --name $rg \
   -l eastus
+
+az vm availability-set create -g $rg \
+  --name avset-$vmPrefix \
 
 # criar a vnet
 az network vnet create \
-  -n $vnet \
-  -g $rg-dev \
+  -n "$vnet" \
+  -g $rg \
   --address-prefixes "$address" \
   -l eastus \
   --subnet-name "$subnet" \
-  --subnet-prefix "$subnet-address"
+  --subnet-prefix "$subnetAddress"
 
 # criar o nsg do template
-az network nsg create --resource-group $rg-dev \
+az network nsg create --resource-group $rg \
   --name $nsgName
   
 # associar duas regras ao nsg
-az network nsg rule create --resource-group $rg-dev  \
+az network nsg rule create --resource-group $rg  \
   --nsg-name $nsgName --name allow-ssh \
   --protocol tcp --direction inbound --priority 1000 --source-address-prefix '*' \
   --source-port-range '*' --destination-address-prefix '*' --destination-port-range 22 \
   --access allow
 
-az network nsg rule create --resource-group $rg-dev  \
+az network nsg rule create --resource-group $rg  \
   --nsg-name $nsgName --name allow-http \
   --protocol tcp --direction inbound --priority 1001 --source-address-prefix '*' \
   --source-port-range '*' --destination-address-prefix '*' --destination-port-range 80 \
   --access allow
 
-az network nsg rule create --resource-group $rg-dev  \
+az network nsg rule create --resource-group $rg  \
   --nsg-name $nsgName --name allow-http \
   --protocol tcp --direction inbound --priority 1001 --source-address-prefix '*' \
   --source-port-range '*' --destination-address-prefix '*' --destination-port-range 8080 \
@@ -67,6 +70,7 @@ do
     --resource-group $rg \
     --os-disk-name osdisk-$baseName \
     --name $baseName \
+    --availability-set avset-$vmPrefix \
     --nics nic-$baseName \
     --storage-sku standard_lrs \
     --size $vmSize \

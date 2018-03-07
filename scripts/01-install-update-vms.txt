@@ -1,0 +1,26 @@
+echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ wheezy main" | \sudo tee /etc/apt/sources.list.d/azure-cli.list 
+sudo apt-key adv --keyserver packages.microsoft.com --recv-keys 52E16F86FEE04B979B07E28DB02C46DF417A0893
+sudo apt-get install apt-transport-https
+sudo apt-get update && sudo apt-get install azure-cli
+
+	
+sudo -i
+apt-get update; apt-get upgrade -y
+ 
+systemctl disable ufw
+systemctl stop ufw
+ 
+#https://www.digitalocean.com/community/tutorials/como-instalar-e-usar-o-docker-no-ubuntu-16-04-pt
+apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 58118E89F3A912897C070ADBF76221572C52609D
+apt-add-repository 'deb https://apt.dockerproject.org/repo ubuntu-xenial main'
+apt-get update
+apt-cache policy docker-engine
+apt-get install -y docker-engine docker-compose jq maven openjdk-8-jdk-headless sysstat htop
+systemctl status docker
+systemctl enable docker
+
+# sair do root
+sudo usermod -aG docker $USER
+
+sudo reboot
+

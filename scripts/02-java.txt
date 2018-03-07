@@ -1,0 +1,7 @@
+git clone https://github.com/mvsoares/java.git
+cd java
+mvn clean install
+java -jar target/HappyFriday-0.0.1-SNAPSHOT.jar &
+
+curl localhost:8080/
+curl localhost:8080/quote
