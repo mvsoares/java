@@ -1,0 +1,71 @@
+=====================================================
+# criar o acr 
+az acr create \
+--name acrshimoo \
+--resource-group rg-dev \
+--sku Standard \
+--admin-enabled true
+
+
+az acr show --name acrshimoo -o jsonc
+acrshimoo.azurecr.io
+
+$ az acr credential show -n acrshimoo
+docker login acrshimoo.azurecr.io -u acrshimoo -p rL1bhkmV/yTNnndZ6=YHyZeWCWB2sCUn
+
+
+=====================================================
+
+mvn clean install
+docker build -t happy:v1 .
+docker run -d --rm -p 8080:8080 happy:v1
+curl localhost:8080/quote
+
+for i in {1..5000}; do curl -X GET "local:8080/";  echo ""; sleep 0.3; done
+ 
+docker exec -it a9 sh
+ 
+docker ps 
+ 
+docker login acrshimoo.azurecr.io -u acrshimoo -p rL1bhkmV/yTNnndZ6=YHyZeWCWB2sCUn
+docker tag happy:v1 acrshimoo.azurecr.io/happy:v1-shimoo
+
+docker push acrshimoo.azurecr.io/happy:v1-shimoo
+sudo az aks install-cli
+
+===================================================================================================================
+az group create \
+  --name rg-dev \
+  -l eastus
+  
+az aks create -g k8s-lab -n k8s-lab --generate-ssh-keys
+
+kubectl create -f happy-deploy.yaml --dry-run=true
+ 
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: happy-friday-service
+  labels:
+    app: happy-friday
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 8080
+      protocol: TCP
+      targetPort: 8080
+  selector:
+    app: happy-friday
+	
+az aks scale -g rg-k8s -n happyfriday-k8s -c 4
+
+===================================================================================================================
+ssh 52.184.153.140 -A -L 8001:localhost:8001
+
+
+===================================================================================================================
+
+
+
+
