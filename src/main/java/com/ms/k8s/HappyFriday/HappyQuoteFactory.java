@@ -42,7 +42,7 @@ public class HappyQuoteFactory {
 		} catch (IOException e1) {
 			try {
 				hostName = InetAddress.getLocalHost().getHostName();
-				return hostName;
+				return hostName + " - AzureRocks !!! ";
 			} catch (UnknownHostException e) {
 				return "";
 			}
